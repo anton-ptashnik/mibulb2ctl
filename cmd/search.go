@@ -34,14 +34,16 @@ var searchCmd = &cobra.Command{
 
 		endTime := time.Now().Add(time.Second * 11)
 		var b mibulb2.BulbSummary
+	L:
 		for endTime.After(time.Now()) {
 			select {
 			case b = <-foundBulbs:
-				break
+				break L
 			default:
+				time.Sleep(time.Second * 3)
 			}
 		}
-		fmt.Println("found device:", b)
+		fmt.Printf("found device: %+v\n", b)
 		si <- true
 	},
 }
