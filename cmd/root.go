@@ -36,6 +36,16 @@ var rootCmd = &cobra.Command{
 	Long: "Top level command usage displays state of the corresponding property." +
 		"Property is set by providing the value corresponding to the property in question",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		if cmd.Name() == "search" {
+			return
+		}
+
+		viper.SetConfigFile(path.Join(os.Getenv("userprofile"), ".bulbctl.env"))
+		if err := viper.ReadInConfig(); err != nil {
+			fmt.Println("Config file is missing. Use 'search' command to init the util")
+			os.Exit(1)
+		}
+
 		bulbSummary := mibulb2.BulbSummary{}
 		viper.Unmarshal(&bulbSummary)
 		bulb = mibulb2.Bulb{bulbSummary}
@@ -52,21 +62,3 @@ func Execute() {
 }
 
 var bulb mibulb2.Bulb
-
-func init() {
-	cobra.OnInitialize(initConfig)
-}
-
-// initConfig reads in config file and ENV variables if set.
-func initConfig() {
-
-	// Search config in home directory with name ".bulbctl" (without extension).
-	viper.SetConfigFile(path.Join(os.Getenv("userprofile"), ".bulbctl.env"))
-	// viper.AutomaticEnv() // read in environment variables that match
-
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err != nil {
-		fmt.Println("Config file is missing: ", err)
-		os.Exit(1)
-	}
-}
