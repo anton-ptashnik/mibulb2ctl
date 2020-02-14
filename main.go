@@ -15,9 +15,7 @@ limitations under the License.
 */
 package main
 
-import (
-	"bulbctl/cmd"
-)
+import "bulbctl/cmd"
 
 func main() {
 	cmd.Execute()

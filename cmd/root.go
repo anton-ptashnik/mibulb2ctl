@@ -28,6 +28,7 @@ import (
 )
 
 var cfgFile string
+var cfgFilePath = path.Join(os.Getenv("userprofile"), ".bulbctl.env")
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -36,13 +37,13 @@ var rootCmd = &cobra.Command{
 	Long: "Top level command usage displays state of the corresponding property." +
 		"Property is set by providing the value corresponding to the property in question",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		if cmd.Name() == "search" {
+		if cmd.Name() == discoverCmd.Name() {
 			return
 		}
 
-		viper.SetConfigFile(path.Join(os.Getenv("userprofile"), ".bulbctl.env"))
+		viper.SetConfigFile(cfgFilePath)
 		if err := viper.ReadInConfig(); err != nil {
-			fmt.Println("Config file is missing. Use 'search' command to init the util")
+			fmt.Printf("No bulbs were setup to be managed. Use '%s' to command to setup\n", discoverCmd.Name())
 			os.Exit(1)
 		}
 
