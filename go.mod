@@ -1,4 +1,4 @@
-module bulbctl
+module mibulb2ctl
 
 go 1.13
 
